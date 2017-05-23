@@ -1,0 +1,8 @@
+[{
+  "name": "tag1",
+  "ownerID": "000000000000000000000001",
+  "description": "This is a tag with a given name"
+}, {
+  "ownerID": "000000000000000000000002",
+  "description": "This is a tag without a given name"
+}]

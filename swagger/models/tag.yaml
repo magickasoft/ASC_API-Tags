@@ -1,0 +1,55 @@
+type: object
+properties:
+  _id:
+    description: ObjectID from MongoDB
+    type: string
+    x-swaggering-mongoose:
+      type: ObjectId
+  createdAt:
+    type: string
+    format: date
+    minLength: 0
+  updatedAt:
+    type: string
+    format: date
+    minLength: 0
+  ownerID:
+    description: The identity ID of the owner of this tag
+    type: string
+    x-swaggering-mongoose:
+      type: ObjectId
+  name:
+    description: The tag name
+    type: string
+    minLength: 1
+    x-swaggering-mongoose:
+      # model redefines this property for auto naming
+      index:
+        unique: 1
+  expiredAt:
+    type: string
+    description: The expiration date
+    format: date
+    minLength: 0
+  description:
+    type: string
+    description: Tag description
+    minLength: 0
+  identities:
+    type: array
+    description: Identities related to this tag
+    items:
+      type: object
+      required:
+        - identityID
+      properties:
+        identityID:
+          type: string
+          description: The ObjectId of an identity
+          pattern: "[0-9a-z]{24}"
+        createdAt:
+          description: The creation date
+          type: string
+          format: date
+          minLength: 0
+

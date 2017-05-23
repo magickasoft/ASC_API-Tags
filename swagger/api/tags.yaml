@@ -1,0 +1,172 @@
+swagger: '2.0'
+info:
+  version: '0.1'
+  title: ASC Tag management API
+  description: "These are the API for tag management"
+host: api.asc.com
+basePath: /v1
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  '/tags':
+    get:
+      description: List all tags
+      responses:
+        '200':
+          description: List of tags
+          schema:
+            type: array
+            items:
+              $ref: ../models/tag.yaml
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - admins
+          - owner
+    post:
+      description: Declares and creates a new tag
+      parameters:
+        - name: _tag
+          in: body
+          description: Details of the tag
+          required: true
+          schema:
+            $ref: ../models/tag.yaml
+      responses:
+        '201':
+          description: Creation successful
+          headers:
+             location:
+               type: string
+          schema:
+              $ref: ../models/tag.yaml
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - admins
+          - owner
+  '/tags/{name}/identities':
+    post:
+      description: Add an identity to a tag
+      parameters:
+        - name: name
+          in: path
+          description: Tag name
+          required: true
+          type: string
+        - name: _tag
+          in: body
+          description: Details of the tag
+          required: true
+          schema:
+            $ref: ../forms/post_identities.yaml
+      responses:
+        '202':
+          description: Identity accepted
+          schema:
+            type: string
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - users
+          - admins
+  '/tags/{id}':
+    get:
+      description: Retrieves a tag by ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of the tag to get
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Details of the tag by ID
+          schema:
+            $ref: ../models/tag.yaml
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - admins
+          - owner
+    put:
+      description: Updates an existing tag
+      parameters:
+        - name: id
+          in: path
+          description: ID of the tag to update
+          required: true
+          type: string
+        - name: _tag
+          in: body
+          description: Details of the tag to update
+          required: true
+          schema:
+            $ref: ../models/tag.yaml
+      responses:
+        '200':
+          description: Update successful
+          schema:
+            $ref: ../models/tag.yaml
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - admins
+          - owner
+    delete:
+      description: Removes an existing tag
+      parameters:
+        - name: id
+          in: path
+          description: ID of the tag to delete
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Delete successful
+          schema:
+            type: string
+        default:
+          description: An error occurred
+          schema:
+            $ref: ../models/errors.yaml
+      security:
+        - jwt:
+          - admins
+          - owner
+securityDefinitions:
+  jwt:
+    description: "Identity token"
+    type: "oauth2"
+    flow: "implicit"
+    authorizationUrl: "/v1/identities/login/basic"
+    scopes:
+      owner: Owner scope
+      admins: Administrators scope
+      users: Regular users scope
+      premium_users: Premium users scope
+      internal_ms: Internal microservices scope
+    x-authorize-owner:
+      ownerID : _id
+definitions:
+  Tag:
+    $ref: ../models/tag.yaml
